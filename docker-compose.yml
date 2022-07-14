@@ -1,0 +1,38 @@
+version: "3"
+services:
+    app:
+        image: symfony-app
+        container_name: symfony-app
+        env_file:
+            - docker/.docker.env
+        extra_hosts:
+            -   "host.docker.internal:host-gateway"
+        depends_on:
+            - main-db
+        links:
+            - main-db
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        environment:
+            CONTAINER_ROLE: app
+            XDEBUG_CONFIG: remote_host=host.docker.internal
+        volumes:
+            - .:/var/www/html
+        ports:
+            - "${HOST_MACHINE_APP_HTTP_PORT}:80"
+    main-db:
+        image: postgres:14
+        container_name: symfony-postgres
+        restart: always
+        volumes:
+            - main_db_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: ${DATABASE_NAME}
+            POSTGRES_USER: ${DATABASE_USERNAME}
+            POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+        ports:
+            - "${HOST_MACHINE_DATABASE_PORT}:5432"
+volumes:
+    main_db_data:
+        driver: "local"
