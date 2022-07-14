@@ -13,6 +13,19 @@ docker-compose ps
 # To login in to app container
 docker-compose exec app bash
 
+# Install composer 
+composer install
+
+# install npm 
+npm install
+
+# run the build
+npm run build
+
+# to watch the build
+npm run watch
+
+# In the browser open to see all the changes
 http://localhost:8080
 ```
 
